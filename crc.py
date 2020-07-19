@@ -23,7 +23,7 @@ def calc_crc(string):
     return hex(((crc & 0xff) << 8) + (crc >> 8))
 
 
-my_text = docx2txt.process(r'2020-02-14-方昊堃每周一计.docx')
+my_text = docx2txt.process(r'test.docx')
 print(my_text)
 print(type(my_text))
 list = my_text.split('\n')
