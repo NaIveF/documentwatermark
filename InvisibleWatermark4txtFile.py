@@ -1,5 +1,4 @@
 import hashlib
-import docx2txt
 
 
 def string_to_md5(string):
@@ -80,8 +79,27 @@ def judge_different(file_target):
             binary_result = binary_replace(binary)  # replace crc string as invisible unicode
             if binary_result != str_watermark:
                 print(
-                    f'[-]The target file is different from  origin file in: paragraph {alllines_ft.index(paragraph) + 1} sentence {list.index(sentence) + 1}. ' + sentence+'。')
+                    f'[-]The target file is different from  origin file in: paragraph {alllines_ft.index(paragraph) + 1} sentence {list.index(sentence) + 1}. ' + sentence + '。')
     ft.close()
+
+
+def delete_invisible_chars(origin_string):
+    invisible_chars = ['\u202A', '\u202B', '\u202C', '\u202D']
+    for i in invisible_chars:
+        origin_string = origin_string.replace(i, '')
+    return origin_string
+
+
+def document_recovery(filename_watermark, filename_recovery):
+    fin = open(filename_watermark, 'r', encoding='utf-8')  # read file
+    fout = open(filename_recovery, 'w', encoding='utf-8')
+    text = fin.readlines()
+    fin.close()
+    for paragraph in text:
+        paragraph = delete_invisible_chars(paragraph)
+        fout.write(paragraph)
+    fout.close()
+    print('[*]Recovery Successfully.')
 
 
 if __name__ == "__main__":
@@ -89,3 +107,5 @@ if __name__ == "__main__":
     add_watermark('text.txt', 'result.txt')
     print('***************************\nCheck any change in txt file.\n***************************')
     judge_different('result1.txt')  # some difference from generated file
+    print('***************************\nRecovery file with watermark.\n***************************')
+    document_recovery('result.txt', 'recovery.txt')
